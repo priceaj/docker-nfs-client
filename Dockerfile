@@ -42,8 +42,8 @@ ENV MOUNTPOINT /mnt/nfs-1
 RUN apk add --no-cache --update nfs-utils && \
     rm /sbin/halt /sbin/poweroff /sbin/reboot
 
-HEALTHCHECK --interval=1s --timeout=5s \
-    CMD mountpoint -q $MOUNTPOINT || exit 1
+HEALTHCHECK --interval=1s --timeout=5s --start-period=60s  \
+    CMD mount -t nfs | grep "$SERVER:$SHARE" || exit 1
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
